@@ -1,6 +1,6 @@
-load("//xla/stream_executor:build_defs.bzl", "if_cuda_or_rocm",)
-load("@local_config_cuda//cuda:build_defs.bzl", "if_cuda",)
-load("@local_config_rocm//rocm:build_defs.bzl", "if_rocm",)
+#load("//xla/stream_executor:build_defs.bzl", "if_cuda_or_rocm",)
+#load("@local_config_cuda//cuda:build_defs.bzl", "if_cuda",)
+#load("@local_config_rocm//rocm:build_defs.bzl", "if_rocm",)
 load("@tsl//tsl:tsl.bzl", "if_with_tpu_support")
 load("@tsl//tsl:tsl.bzl", "tsl_grpc_cc_dependencies",)
 load("@tsl//tsl:tsl.bzl", "transitive_hdrs",)
@@ -18,12 +18,9 @@ cc_binary(
     "//xla/service:hlo_proto_cc_impl",
     "//xla/service/memory_space_assignment:memory_space_assignment_proto_cc_impl",
     "//xla/service:buffer_assignment_proto_cc_impl",
-    "//xla/service/gpu:backend_configs_cc_impl",
-    "//xla/service/gpu/model:hlo_op_profile_proto_cc_impl",
     "//xla/stream_executor:device_description_proto_cc_impl",
     "//xla:autotune_results_proto_cc_impl",
     "//xla/stream_executor:stream_executor_impl",
-    "//xla/stream_executor/gpu:gpu_init_impl",
     "//xla/stream_executor/host:host_platform",
     "//xla:literal",
     "//xla:shape_util",
@@ -50,7 +47,6 @@ cc_binary(
     "//xla/pjrt:tfrt_cpu_pjrt_client",
     "//xla/pjrt:pjrt_c_api_client",
     "//xla/pjrt/distributed",
-    "//xla/pjrt/gpu:se_gpu_pjrt_client",
     "//xla/pjrt/distributed:client",
     "//xla/pjrt/distributed:service",
     "//xla:autotuning_proto_cc_impl",
@@ -82,15 +78,7 @@ cc_binary(
   ]
   # GRPC Dependencies (needed for PjRt distributed)
   + tsl_grpc_cc_dependencies()
-  + if_cuda_or_rocm([
-    "//xla/service:gpu_plugin",
-  ])
-  + if_cuda([
-    "//xla/stream_executor:cuda_platform"
-  ])
-  + if_rocm([
-    "//xla/stream_executor:rocm_platform"
-  ]),
+
   copts = ["-fvisibility=default"],
   linkopts= select({
     "@tsl//tsl:macos": [
